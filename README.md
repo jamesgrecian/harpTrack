@@ -8,7 +8,7 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 
 Harp seal resource tracking
 
-The *harpTrack* repository contains data and R code to accompany the
+The **harpTrack** repository contains data and R code to accompany the
 paper “The role of resource tracking in shaping harp seal migration
 across a changing Arctic Ocean” by W. James Grecian, Martin Biuw, Pearse
 Buchanan, Lars Boehme, Lars P. Folkow, Pierre J. Goulet, Tore Haug,
