@@ -47,3 +47,9 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Climate data files
+data/NSIDC
+data/NPP
+data/CMIP6 ice
+data/CMIP6 npp
