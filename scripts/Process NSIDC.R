@@ -241,4 +241,44 @@ in_out(in_path = "data/NSIDC/daily_ice_2019",
 
 in_out(in_path = "data/NSIDC/daily_ice_2020",
        out_path = "data/NSIDC/ice_phenology_2020")
+
+
+####################################
+### Generate climatology rasters ###
+####################################
+
+# load ice
+ice_phenology_clim <- stack("data/NSIDC/ice_phenology_1995",
+                            "data/NSIDC/ice_phenology_1996",
+                            "data/NSIDC/ice_phenology_1997",
+                            "data/NSIDC/ice_phenology_1998", 
+                            "data/NSIDC/ice_phenology_1999",
+                            "data/NSIDC/ice_phenology_2000",
+                            "data/NSIDC/ice_phenology_2001",
+                            "data/NSIDC/ice_phenology_2002",
+                            "data/NSIDC/ice_phenology_2003",
+                            "data/NSIDC/ice_phenology_2004",
+                            "data/NSIDC/ice_phenology_2005",
+                            "data/NSIDC/ice_phenology_2006",
+                            "data/NSIDC/ice_phenology_2007",
+                            "data/NSIDC/ice_phenology_2008",
+                            "data/NSIDC/ice_phenology_2009",
+                            "data/NSIDC/ice_phenology_2010",
+                            "data/NSIDC/ice_phenology_2011",
+                            "data/NSIDC/ice_phenology_2012",
+                            "data/NSIDC/ice_phenology_2013",
+                            "data/NSIDC/ice_phenology_2014",
+                            "data/NSIDC/ice_phenology_2015",
+                            "data/NSIDC/ice_phenology_2016",
+                            "data/NSIDC/ice_phenology_2017",
+                            "data/NSIDC/ice_phenology_2018",
+                            "data/NSIDC/ice_phenology_2019",
+                            "data/NSIDC/ice_phenology_2020",
+                            bands = 1)
+
+meanIce <- calc(ice_phenology_clim, mean, na.rm = T)
+plot(meanIce)
+
+writeRaster(meanPhen, "data/NSIDC/ice_phenology_climatology")
+
 # ends
