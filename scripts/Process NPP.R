@@ -39,11 +39,6 @@ mat_to_raster(fn = "2018_A.mat")
 mat_to_raster(fn = "2019_A.mat")
 mat_to_raster(fn = "2020_A.mat")
 
-# generate phenology rasters
-#source("R/NPP_phenology.R")
-
-#NPP_phenology(fn = "NPP_1999", trim = .95)
-
 # generate phenology rasters based on the 5% above median rule from Jo Hopkins
 source("R/NPP_phenology_5percent.R")
 

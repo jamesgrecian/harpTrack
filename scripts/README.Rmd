@@ -1,0 +1,23 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# Scripts
+
+1. Process raw seal tracks
+2. Process NSIDC
+3. Process NPP
+4. End of century NPP
+5. Extract covariates to seal tracks
