@@ -35,7 +35,7 @@ extract_npp_bloom <- function(df, path){
   foo <- purrr::map_df(split(foo, foo$fullname)[unique(foo$fullname)], 
                       function(.x) {
                         pb$tick()$print()
-                        .x["SpringBloom"] <- raster::extract(raster(.x$fullname[1]), as.matrix(.x[c("X", "Y")]))
+                        .x["BloomDay"] <- raster::extract(raster(.x$fullname[1]), as.matrix(.x[c("X", "Y")]))
                         .x
                       })
   
@@ -75,7 +75,7 @@ extract_phenology_bloom <- function(df, path){
   foo <- purrr::map_df(split(foo, foo$fullname)[unique(foo$fullname)], 
                        function(.x) {
                          pb$tick()$print()
-                         .x["bloomValue"] <- raster::extract(raster(.x$fullname[1]), as.matrix(.x[c("X", "Y")]))
+                         .x["BloomValue"] <- raster::extract(raster(.x$fullname[1]), as.matrix(.x[c("X", "Y")]))
                          .x
                        })
   

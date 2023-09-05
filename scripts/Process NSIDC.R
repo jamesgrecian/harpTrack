@@ -279,6 +279,6 @@ ice_phenology_clim <- stack("data/NSIDC/ice_phenology_1995",
 meanIce <- calc(ice_phenology_clim, mean, na.rm = T)
 plot(meanIce)
 
-writeRaster(meanPhen, "data/NSIDC/ice_phenology_climatology")
+writeRaster(meanIce, "data/NSIDC/ice_phenology_climatology", overwrite = T)
 
 # ends

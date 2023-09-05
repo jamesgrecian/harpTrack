@@ -129,7 +129,6 @@ npp_phenology_clim <- stack("data/NPP/NPP_1998_phenology_5percent",
 
 meanPhen <- calc(npp_phenology_clim, mean, na.rm = T)
 plot(meanPhen)
-
-writeRaster(meanPhen, "data/revised NPP/npp_phenology_climatology")
+writeRaster(meanPhen, "data/NPP/npp_phenology_climatology", overwrite = T)
 
 # ends
