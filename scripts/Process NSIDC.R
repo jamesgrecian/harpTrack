@@ -51,9 +51,20 @@ ice_hist_phen <- ice_phenology(ice_hist)
 ice_ssp245_phen <- ice_phenology(ice_ssp245)
 ice_ssp585_phen <- ice_phenology(ice_ssp585)
 
+# phenology anomaly
+ssp245_anom_phen <- ice_ssp245_phen - ice_hist_phen 
+ssp585_anom_phen <- ice_ssp585_phen - ice_hist_phen
+
+plot(ssp245_anom_phen)
+plot(ssp585_anom_phen)
+
 # save raster ouputs
 writeRaster(ssp245_anom, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_mean")
 writeRaster(ssp585_anom, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_mean")
+
+writeRaster(ssp245_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_phenology")
+writeRaster(ssp585_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_phenology")
+
 
 # then need new function that takes daily NSIDC data and appends anomaly to it...
 # processing takes a long time
