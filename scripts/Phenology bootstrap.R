@@ -33,7 +33,7 @@ require(patchwork)
 
 # load data with covariates
 dat <- readRDS("data/harp_locs_routed_covariates_20230906.rds")
-dat <- dat |> filter(day >= 60) # drop locations before 1st March
+#dat <- dat |> filter(day >= 60) # drop locations before 1st March
 
 # Add deployment year
 dat <- dat |> mutate(year = lubridate::year(date),
@@ -337,6 +337,6 @@ quartz(title = "Panel Plot", width = 7.2, height = 5.2) # full page width is 183
 p4 + p5 + p6 + p1 + p2 + p3 + 
   plot_layout(ncol = 3, nrow = 2, heights = c(1.2, 1), widths = c(1,1,1)) + 
   plot_annotation(tag_levels = 'a') & theme(plot.tag.position = c(0, 1), plot.tag = element_text(size = 8, face = 'bold', hjust = -1, vjust = 0))
-quartz.save(file = "plots/example figure 1 v10.jpeg", type = "jpeg", dev  = dev.cur(), dpi = 500)
+quartz.save(file = "plots/example figure 1 v11.jpeg", type = "jpeg", dev  = dev.cur(), dpi = 500)
 
 # ends

@@ -37,6 +37,14 @@ dat <- dat %>% mutate(day = lubridate::yday(date))
 dat <- dat %>% filter(day >= 50)
 dat <- dat %>% filter(day <= 250)
 
+# five animals tracked over winter but failed late winter/ early spring (moult)
+# remove locations from the incomplete second spring
+# only interested in first recorded migration?
+dat <- dat |> mutate(year = lubridate::year(date))
+dat <- dat |> filter(year != 1997)
+dat <- dat |> filter(year != 2000)
+dat <- dat |> filter(year != 2005)
+
 # format tibble
 dat <- dat |> dplyr::select(id, date, lon, lat, g, day)
 
