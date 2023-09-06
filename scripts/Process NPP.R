@@ -131,4 +131,37 @@ meanPhen <- calc(npp_phenology_clim, mean, na.rm = T)
 plot(meanPhen)
 writeRaster(meanPhen, "data/NPP/npp_phenology_climatology", overwrite = T)
 
+
+npp_bloom_clim <- stack("data/NPP/NPP_1998_phenology_bloom",
+                        "data/NPP/NPP_1999_phenology_bloom",
+                        "data/NPP/NPP_2000_phenology_bloom",
+                        "data/NPP/NPP_2001_phenology_bloom",
+                        "data/NPP/NPP_2002_phenology_bloom",
+                        "data/NPP/NPP_2003_phenology_bloom",
+                        "data/NPP/NPP_2004_phenology_bloom",
+                        "data/NPP/NPP_2005_phenology_bloom",
+                        "data/NPP/NPP_2006_phenology_bloom",
+                        "data/NPP/NPP_2007_phenology_bloom",
+                        "data/NPP/NPP_2008_phenology_bloom",
+                        "data/NPP/NPP_2009_phenology_bloom",
+                        "data/NPP/NPP_2010_phenology_bloom",
+                        "data/NPP/NPP_2011_phenology_bloom",
+                        "data/NPP/NPP_2012_phenology_bloom",
+                        "data/NPP/NPP_2013_phenology_bloom",
+                        "data/NPP/NPP_2014_phenology_bloom",
+                        "data/NPP/NPP_2015_phenology_bloom",
+                        "data/NPP/NPP_2016_phenology_bloom",
+                        "data/NPP/NPP_2017_phenology_bloom",
+                        "data/NPP/NPP_2018_phenology_bloom",
+                        "data/NPP/NPP_2019_phenology_bloom",
+                        "data/NPP/NPP_2020_phenology_bloom")
+
+meanBloom <- calc(npp_bloom_clim, mean, na.rm = T)
+sdBloom <- calc(npp_bloom_clim, sd, na.rm = T)
+
+bloom_out <- stack(meanBloom, sdBloom)
+names(bloom_out) <- c("meanBloom", "sdBloom")
+
+writeRaster(bloom_out, "data/NPP/npp_bloom_climatology", overwrite = T)
+
 # ends
