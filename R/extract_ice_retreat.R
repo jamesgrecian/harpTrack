@@ -41,11 +41,25 @@ extract_ice_retreat <- function(df, path){
                          .x
                        })
   
+  # some coastal points excluded here
+  # move to nearest available ice cell within 50 km
+  source("R/nearestLand.R")
+  foo2 <- foo |> filter(is.na(IceDay))
+  foo2[c("X2", "Y2")] <- nearestLand(cbind(foo2$X, foo2$Y), rdummy, 50000)
+  ## now, re-extract per file 
+  foo2 <- purrr::map_df(split(foo2, foo2$fullname)[unique(foo2$fullname)], 
+                       function(.x) {
+                         .x["IceDay"] <- raster::extract(raster(.x$fullname[1]), as.matrix(.x[c("X2", "Y2")]))
+                         .x
+                       })
+  foo$IceDay[is.na(foo$IceDay)] <- foo2$IceDay
+
   # recombine dataframes, filling NA for unavailable years
   foo <- foo %>% dplyr::select(-c("fullname", "X", "Y"))
   suppressMessages(df <- df %>% left_join(foo))
+  df$IceDay[df$lat < 43] <- 0 # couple of points below extent of NSIDC raster
   df <- df %>% arrange(id, date)
-  
+
   return(df)
 }
 

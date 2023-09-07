@@ -37,7 +37,20 @@ extract_ssp_bloom <- function(df, path, scenario){
                          .x["sspBloom"] <- raster::extract(stack(.x$fullname[1]), as.matrix(.x[c("X", "Y")]), layer = 2, nl = 1)
                          .x
                        })
-
+  
+  # some coastal points excluded here
+  # move to nearest available ice cell within 50 km
+  source("R/nearestLand.R")
+  foo2 <- foo |> filter(is.na(sspBloom))
+  foo2[c("X2", "Y2")] <- nearestLand(cbind(foo2$X, foo2$Y), rdummy, 50000)
+  ## now, re-extract per file 
+  foo2 <- purrr::map_df(split(foo2, foo2$fullname)[unique(foo2$fullname)], 
+                        function(.x) {
+                          .x["sspBloom"] <- raster::extract(raster(.x$fullname[1]), as.matrix(.x[c("X2", "Y2")]))
+                          .x
+                        })
+  foo$sspBloom[is.na(foo$sspBloom)] <- foo2$sspBloom
+  
   # recombine dataframes, filling NA for unavailable years
   foo <- foo %>% dplyr::select(-c("fullname", "X", "Y"))
   suppressMessages(df <- df %>% left_join(foo))
