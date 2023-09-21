@@ -51,19 +51,39 @@ ice_hist_phen <- ice_phenology(ice_hist)
 ice_ssp245_phen <- ice_phenology(ice_ssp245)
 ice_ssp585_phen <- ice_phenology(ice_ssp585)
 
+plot(ice_hist_phen)
+plot(ice_ssp245_phen)
+plot(ice_ssp585_phen)
+
+par(mfrow = c(3, 1))
+plot(ice_hist_phen)
+plot(ice_ssp245_phen)
+plot(ice_ssp585_phen)
+
+ice_hist_phen2 <- ice_hist_phen
+ice_ssp245_phen2 <- ice_ssp245_phen
+ice_ssp585_phen2 <- ice_ssp585_phen
+
+
+# make everything in hist and ssp245 that is NA 365
+# then do maths
+# then take all NAs in ssp585 and convert back to NAs
+ice_hist_phen[is.na(ice_hist_phen)] <- 365
+ice_ssp245_phen[is.na(ice_ssp245_phen)] <- 365
 # phenology anomaly
 ssp245_anom_phen <- ice_ssp245_phen - ice_hist_phen 
-ssp585_anom_phen <- ice_ssp585_phen - ice_hist_phen
-
+# put land and permanent ice back
+ssp245_anom_phen[is.na(ice_ssp245_phen2)] <- NA
 plot(ssp245_anom_phen)
+ssp585_anom_phen <- ice_ssp585_phen - ice_hist_phen
 plot(ssp585_anom_phen)
 
 # save raster ouputs
 writeRaster(ssp245_anom, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_mean")
 writeRaster(ssp585_anom, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_mean")
 
-writeRaster(ssp245_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_phenology")
-writeRaster(ssp585_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_phenology")
+writeRaster(ssp245_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_phenology_incl_retreat")
+writeRaster(ssp585_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_phenology_incl_retreat")
 
 
 # then need new function that takes daily NSIDC data and appends anomaly to it...
@@ -71,7 +91,7 @@ writeRaster(ssp585_anom_phen, "data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_phenology
 # download NSDIC data first and then process it
 # less of an issue on new computer
 nsidc_1995 <- process_NSIDC(year = 1995)
-writeRaster(nsidc_1995, "data/NSIDC/daily_ice_1995")
+writeRaster(nsidc_1995, "data/NSIDC/daily_ice_1995_v2")
 rm(nsidc_1995)
 nsidc_1996 <- process_NSIDC(year = 1996)
 writeRaster(nsidc_1996, "data/NSIDC/daily_ice_1996")
@@ -151,107 +171,17 @@ nsidc_2020 <- process_NSIDC(year = 2020)
 writeRaster(nsidc_2020, "data/NSIDC/daily_ice_2020")
 rm(nsidc_2020)
 
-### now work through each year
-### add the anomaly
-### recalculate timing
-### output ready for extraction
-ssp245_anom <- stack("data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_mean")
-projection(ssp245_anom) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+###
+### Don't need to combine end of century ice with each year
+### Just calculate phenology of sea ice retreat
+###
 
-ssp585_anom <- stack("data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_mean")
-projection(ssp585_anom) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-
-# for each year...
-in_out <- function(in_path, out_path){
-  daily_ice <- stack(in_path) # load ice
-  daily_ice <- subset(daily_ice, 1:245)
-  daily_ice_ssp245 <- format_future(daily_ice, ssp245_anom) # append anomaly
-  daily_ice_ssp585 <- format_future(daily_ice, ssp585_anom)
-  ice_phen_origin <- ice_phenology(daily_ice) # calculate ice retreat timing
-  ice_phen_ssp245 <- ice_phenology(daily_ice_ssp245)
-  ice_phen_ssp585 <- ice_phenology(daily_ice_ssp585)
-  out <- stack(ice_phen_origin, ice_phen_ssp245, ice_phen_ssp585) # stack
-  names(out) <- c("origin", "ssp245", "ssp585")
-  writeRaster(out, out_path) # output
+for(i in 1:length(fn)){
+  daily_ice <- stack(fn[i])
+  ice_pheno <- ice_phenology(daily_ice)
+  writeRaster(ice_pheno,
+              paste0("data/NSIDC/ice_phenology_", substr(fn[i], nchar(fn[i])-3, nchar(fn[i]))))
 }
-
-in_out(in_path = "data/NSIDC/daily_ice_1995",
-       out_path = "data/NSIDC/ice_phenology_1995")
-
-in_out(in_path = "data/NSIDC/daily_ice_1996",
-       out_path = "data/NSIDC/ice_phenology_1996")
-
-in_out(in_path = "data/NSIDC/daily_ice_1997",
-       out_path = "data/NSIDC/ice_phenology_1997")
-
-in_out(in_path = "data/NSIDC/daily_ice_1998",
-       out_path = "data/NSIDC/ice_phenology_1998")
-
-in_out(in_path = "data/NSIDC/daily_ice_1999",
-       out_path = "data/NSIDC/ice_phenology_1999")
-
-in_out(in_path = "data/NSIDC/daily_ice_2000",
-       out_path = "data/NSIDC/ice_phenology_2000")
-
-in_out(in_path = "data/NSIDC/daily_ice_2001",
-       out_path = "data/NSIDC/ice_phenology_2001")
-
-in_out(in_path = "data/NSIDC/daily_ice_2002",
-       out_path = "data/NSIDC/ice_phenology_2002")
-
-in_out(in_path = "data/NSIDC/daily_ice_2003",
-       out_path = "data/NSIDC/ice_phenology_2003")
-
-in_out(in_path = "data/NSIDC/daily_ice_2004",
-       out_path = "data/NSIDC/ice_phenology_2004")
-
-in_out(in_path = "data/NSIDC/daily_ice_2005",
-       out_path = "data/NSIDC/ice_phenology_2005")
-
-in_out(in_path = "data/NSIDC/daily_ice_2006",
-       out_path = "data/NSIDC/ice_phenology_2006")
-
-in_out(in_path = "data/NSIDC/daily_ice_2007",
-       out_path = "data/NSIDC/ice_phenology_2007")
-
-in_out(in_path = "data/NSIDC/daily_ice_2008",
-       out_path = "data/NSIDC/ice_phenology_2008")
-
-in_out(in_path = "data/NSIDC/daily_ice_2009",
-       out_path = "data/NSIDC/ice_phenology_2009")
-
-in_out(in_path = "data/NSIDC/daily_ice_2010",
-       out_path = "data/NSIDC/ice_phenology_2010")
-
-in_out(in_path = "data/NSIDC/daily_ice_2011",
-       out_path = "data/NSIDC/ice_phenology_2011")
-
-in_out(in_path = "data/NSIDC/daily_ice_2012",
-       out_path = "data/NSIDC/ice_phenology_2012")
-
-in_out(in_path = "data/NSIDC/daily_ice_2013",
-       out_path = "data/NSIDC/ice_phenology_2013")
-
-in_out(in_path = "data/NSIDC/daily_ice_2014",
-       out_path = "data/NSIDC/ice_phenology_2014")
-
-in_out(in_path = "data/NSIDC/daily_ice_2015",
-       out_path = "data/NSIDC/ice_phenology_2015")
-
-in_out(in_path = "data/NSIDC/daily_ice_2016",
-       out_path = "data/NSIDC/ice_phenology_2016")
-
-in_out(in_path = "data/NSIDC/daily_ice_2017",
-       out_path = "data/NSIDC/ice_phenology_2017")
-
-in_out(in_path = "data/NSIDC/daily_ice_2018",
-       out_path = "data/NSIDC/ice_phenology_2018")
-
-in_out(in_path = "data/NSIDC/daily_ice_2019",
-       out_path = "data/NSIDC/ice_phenology_2019")
-
-in_out(in_path = "data/NSIDC/daily_ice_2020",
-       out_path = "data/NSIDC/ice_phenology_2020")
 
 
 ####################################
@@ -289,7 +219,120 @@ ice_phenology_clim <- stack("data/NSIDC/ice_phenology_1995",
 
 meanIce <- calc(ice_phenology_clim, mean, na.rm = T)
 plot(meanIce)
-
 writeRaster(meanIce, "data/NSIDC/ice_phenology_climatology", overwrite = T)
 
+# BUT #
+# if a cell remains ice covered some years and not in others
+# this will be the average of when the ice leaves only
+# replace NAs with 365 so that the average includes permanent ice years
+ice_phenology_clim_2 <- ice_phenology_clim
+ice_phenology_clim[is.na(ice_phenology_clim)] <- 365
+meanIce <- calc(ice_phenology_clim, mean, na.rm = F)
+meanIce[meanIce == 365] <- NA
+plot(meanIce)
+
+writeRaster(meanIce, "data/NSIDC/ice_phenology_climatology_v2", overwrite = T)
+
+
+### now work through each year
+### add the anomaly
+### recalculate timing
+### output ready for extraction
+# ssp245_anom <- stack("data/CMIP6 ice/CMIP6_ice_anomaly_ssp245_mean")
+# projection(ssp245_anom) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+# 
+# ssp585_anom <- stack("data/CMIP6 ice/CMIP6_ice_anomaly_ssp585_mean")
+# projection(ssp585_anom) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+# 
+# # for each year...
+# in_out <- function(in_path, out_path){
+#   daily_ice <- stack(in_path) # load ice
+#   daily_ice <- subset(daily_ice, 1:245)
+#   daily_ice_ssp245 <- format_future(daily_ice, ssp245_anom) # append anomaly
+#   daily_ice_ssp585 <- format_future(daily_ice, ssp585_anom)
+#   ice_phen_origin <- ice_phenology(daily_ice) # calculate ice retreat timing
+#   ice_phen_ssp245 <- ice_phenology(daily_ice_ssp245)
+#   ice_phen_ssp585 <- ice_phenology(daily_ice_ssp585)
+#   out <- stack(ice_phen_origin, ice_phen_ssp245, ice_phen_ssp585) # stack
+#   names(out) <- c("origin", "ssp245", "ssp585")
+#   writeRaster(out, out_path) # output
+# }
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_1995",
+#        out_path = "data/NSIDC/ice_phenology_1995")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_1996",
+#        out_path = "data/NSIDC/ice_phenology_1996")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_1997",
+#        out_path = "data/NSIDC/ice_phenology_1997")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_1998",
+#        out_path = "data/NSIDC/ice_phenology_1998")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_1999",
+#        out_path = "data/NSIDC/ice_phenology_1999")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2000",
+#        out_path = "data/NSIDC/ice_phenology_2000")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2001",
+#        out_path = "data/NSIDC/ice_phenology_2001")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2002",
+#        out_path = "data/NSIDC/ice_phenology_2002")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2003",
+#        out_path = "data/NSIDC/ice_phenology_2003")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2004",
+#        out_path = "data/NSIDC/ice_phenology_2004")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2005",
+#        out_path = "data/NSIDC/ice_phenology_2005")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2006",
+#        out_path = "data/NSIDC/ice_phenology_2006")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2007",
+#        out_path = "data/NSIDC/ice_phenology_2007")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2008",
+#        out_path = "data/NSIDC/ice_phenology_2008")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2009",
+#        out_path = "data/NSIDC/ice_phenology_2009")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2010",
+#        out_path = "data/NSIDC/ice_phenology_2010")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2011",
+#        out_path = "data/NSIDC/ice_phenology_2011")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2012",
+#        out_path = "data/NSIDC/ice_phenology_2012")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2013",
+#        out_path = "data/NSIDC/ice_phenology_2013")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2014",
+#        out_path = "data/NSIDC/ice_phenology_2014")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2015",
+#        out_path = "data/NSIDC/ice_phenology_2015")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2016",
+#        out_path = "data/NSIDC/ice_phenology_2016")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2017",
+#        out_path = "data/NSIDC/ice_phenology_2017")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2018",
+#        out_path = "data/NSIDC/ice_phenology_2018")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2019",
+#        out_path = "data/NSIDC/ice_phenology_2019")
+# 
+# in_out(in_path = "data/NSIDC/daily_ice_2020",
+#        out_path = "data/NSIDC/ice_phenology_2020")
 # ends

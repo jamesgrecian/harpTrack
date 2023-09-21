@@ -15,7 +15,7 @@ process_NSIDC <- function(year){
   months <- c("01_Jan", "02_Feb", "03_Mar", "04_Apr", "05_May", "06_Jun", "07_Jul", "08_Aug", "09_Sep")
   
   # generate vector of unique days for filenames
-  days <- format(seq(as.Date(ISOdate(year, 1, 1)), as.Date(ISOdate(year, 9, 30)), 'days'), format="%Y%m%d", tz="UTC")
+  days <- format(seq(as.Date(ISOdate(year, 1, 1)), as.Date(ISOdate(year, 09, 30)), 'days'), format="%Y%m%d", tz="UTC")
   
   fn <- c(paste0(url, year, "/", months[1], "/", "N_", days[month(ymd(days)) == 1], "_concentration_v3.0.tif"),
           paste0(url, year, "/", months[2], "/", "N_", days[month(ymd(days)) == 2], "_concentration_v3.0.tif"),
@@ -80,8 +80,11 @@ ice_phenology <- function(ice_stack){
     if (all(is.na(x))){NA}
     else if (all(x<15)){0} # make all values lower than 15% open water
     else{
-      max_id <- which(x == max(x, na.rm = T)) # find index of max values
-      max_id <- last(max_id) # if maximum value occurs more than once take last one 
+      max_id <- which(x == max(x, na.rm = T)) # find index of max value
+      max_id <- last(max_id)
+#      min_id <- which(x == 0) # find index of max value
+      # only consider max values before last sea ice minimum?
+#      max_id <- last(max_id < min_id) # if maximum value occurs more than once take last one 
       contour_id <- which(x < 15) # find index of all values less than 15%
       id <- first(contour_id[contour_id > max_id]) # now need first value from contour_id AFTER max_id
       return(id)
