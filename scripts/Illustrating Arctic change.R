@@ -13,9 +13,6 @@ source("R/phenology_change.R")
 meanChange_ice <- ice_phenology_change(path = "data/NSIDC")
 meanChange_npp <- npp_phenology_change(path = "data/NPP")
 
-plot(meanChange_ice)
-plot(meanChange_npp)
-
 # extract ice and npp phenology data to harp distribution shapefile
 source("R/harpMask_extract.R")
 ice_extract <- harpMask_extract_ice(path_to_mask <- "~/Dropbox/git_projects/harpDist/data/harpMask_WGS84.nc",
@@ -97,63 +94,63 @@ p1 + p2 + plot_layout(guides='collect') &
   theme(legend.position='bottom')
 
 
-# Phenology time series plot by population
-
-p1 <- ggplot() +
-  theme_bw(base_size = 7, base_family = "Helvetica") +
-  ggtitle("Northwest Atlantic") +
-  ylim(50, 175) +
-  xlab("") + ylab("Day of Year") +
-  geom_line(aes(x = Year, y = DOY_ice), data = combo_summary %>% filter(population == "northwest_95ud"), linetype = "dashed") +
-  geom_point(aes(x = Year, y = DOY_ice), shape = 21, fill = "white", data = combo_summary %>% filter(population == "northwest_95ud")) +
-  geom_smooth(aes(x = Year, y = DOY_ice), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "northwest_95ud")) +
-  geom_line(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "northwest_95ud"), linetype = "dashed") +
-  geom_point(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "northwest_95ud")) +
-  geom_smooth(aes(x = Year, y = DOY_npp), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "northwest_95ud")) +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-
-p2 <- ggplot() +
-  theme_bw(base_size = 7, base_family = "Helvetica") +
-  ggtitle("West Ice") +
-  ylim(50, 175) +
-  xlab("") + ylab("Day of Year") +
-  geom_line(aes(x = Year, y = DOY_ice), data = combo_summary %>% filter(population == "westice_95ud"), linetype = "dashed") +
-  geom_point(aes(x = Year, y = DOY_ice), shape = 21, fill = "white", data = combo_summary %>% filter(population == "westice_95ud")) +
-  geom_smooth(aes(x = Year, y = DOY_ice), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "westice_95ud")) +
-  geom_line(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "westice_95ud"), linetype = "dashed") +
-  geom_point(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "westice_95ud")) +
-  geom_smooth(aes(x = Year, y = DOY_npp), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "westice_95ud")) +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-
-p3 <- ggplot() +
-  theme_bw(base_size = 7, base_family = "Helvetica") +
-  ggtitle("White Sea") +
-  ylim(50, 175) +
-  xlab("") + ylab("Day of Year") +
-  geom_line(aes(x = Year, y = DOY_ice), data = combo_summary %>% filter(population == "eastice_95ud"), linetype = "dashed") +
-  geom_point(aes(x = Year, y = DOY_ice, fill = "ice retreat"), shape = 21, data = combo_summary %>% filter(population == "eastice_95ud")) +
-  geom_smooth(aes(x = Year, y = DOY_ice), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "eastice_95ud")) +
-  geom_line(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "eastice_95ud"), linetype = "dashed") +
-  geom_point(aes(x = Year, y = DOY_npp, fill = "spring bloom"), shape = 21, data = combo_summary %>% filter(population == "eastice_95ud")) +
-  geom_smooth(aes(x = Year, y = DOY_npp), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "eastice_95ud")) +
-  scale_fill_manual(name = "",
-                    values = c(
-                      `ice retreat` = "white",
-                      `spring bloom` = "black"),
-                    guide = guide_legend(
-                      direction = "horizontal",
-                      title.position = "top",
-                      label.position = "right")) +
-  theme(legend.position = c(0.4, 0.2),
-        legend.background = element_rect(fill = "transparent"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
-
-quartz(title = "Panel Plot", width = 4, height = 8)
-print(p1 / p2 / p3)
-dev.off()
+# # Phenology time series plot by population
+# 
+# p1 <- ggplot() +
+#   theme_bw(base_size = 7, base_family = "Helvetica") +
+#   ggtitle("Northwest Atlantic") +
+#   ylim(50, 175) +
+#   xlab("") + ylab("Day of Year") +
+#   geom_line(aes(x = Year, y = DOY_ice), data = combo_summary %>% filter(population == "northwest_95ud"), linetype = "dashed") +
+#   geom_point(aes(x = Year, y = DOY_ice), shape = 21, fill = "white", data = combo_summary %>% filter(population == "northwest_95ud")) +
+#   geom_smooth(aes(x = Year, y = DOY_ice), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "northwest_95ud")) +
+#   geom_line(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "northwest_95ud"), linetype = "dashed") +
+#   geom_point(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "northwest_95ud")) +
+#   geom_smooth(aes(x = Year, y = DOY_npp), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "northwest_95ud")) +
+#   theme(panel.grid.major = element_blank(),
+#         panel.grid.minor = element_blank())
+# 
+# p2 <- ggplot() +
+#   theme_bw(base_size = 7, base_family = "Helvetica") +
+#   ggtitle("West Ice") +
+#   ylim(50, 175) +
+#   xlab("") + ylab("Day of Year") +
+#   geom_line(aes(x = Year, y = DOY_ice), data = combo_summary %>% filter(population == "westice_95ud"), linetype = "dashed") +
+#   geom_point(aes(x = Year, y = DOY_ice), shape = 21, fill = "white", data = combo_summary %>% filter(population == "westice_95ud")) +
+#   geom_smooth(aes(x = Year, y = DOY_ice), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "westice_95ud")) +
+#   geom_line(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "westice_95ud"), linetype = "dashed") +
+#   geom_point(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "westice_95ud")) +
+#   geom_smooth(aes(x = Year, y = DOY_npp), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "westice_95ud")) +
+#   theme(panel.grid.major = element_blank(),
+#         panel.grid.minor = element_blank())
+# 
+# p3 <- ggplot() +
+#   theme_bw(base_size = 7, base_family = "Helvetica") +
+#   ggtitle("White Sea") +
+#   ylim(50, 175) +
+#   xlab("") + ylab("Day of Year") +
+#   geom_line(aes(x = Year, y = DOY_ice), data = combo_summary %>% filter(population == "eastice_95ud"), linetype = "dashed") +
+#   geom_point(aes(x = Year, y = DOY_ice, fill = "ice retreat"), shape = 21, data = combo_summary %>% filter(population == "eastice_95ud")) +
+#   geom_smooth(aes(x = Year, y = DOY_ice), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "eastice_95ud")) +
+#   geom_line(aes(x = Year, y = DOY_npp), data = combo_summary %>% filter(population == "eastice_95ud"), linetype = "dashed") +
+#   geom_point(aes(x = Year, y = DOY_npp, fill = "spring bloom"), shape = 21, data = combo_summary %>% filter(population == "eastice_95ud")) +
+#   geom_smooth(aes(x = Year, y = DOY_npp), method = "lm", se = F, size = .5, colour = "black", data = combo_summary %>% filter(population == "eastice_95ud")) +
+#   scale_fill_manual(name = "",
+#                     values = c(
+#                       `ice retreat` = "white",
+#                       `spring bloom` = "black"),
+#                     guide = guide_legend(
+#                       direction = "horizontal",
+#                       title.position = "top",
+#                       label.position = "right")) +
+#   theme(legend.position = c(0.4, 0.2),
+#         legend.background = element_rect(fill = "transparent"),
+#         panel.grid.major = element_blank(),
+#         panel.grid.minor = element_blank())
+# 
+# quartz(title = "Panel Plot", width = 4, height = 8)
+# print(p1 / p2 / p3)
+# dev.off()
 
 ###
 ### Create maps
@@ -207,7 +204,7 @@ p4 <- ggplot() +
   theme(panel.background = element_rect(fill = "black"),
         panel.grid.major = element_line(color = "black"),
         panel.grid.minor = element_line(color = "black")) +
-  geom_raster(aes(x = x, y = y, fill = layer), data = ice_df) + 
+  geom_raster(aes(x = x, y = y, fill = layer.1), data = ice_df) + 
   geom_sf(aes(), fill = NA, colour = "white", linetype = "dashed", data = nw_poly) +
   geom_sf(aes(), fill = NA, colour = "white", linetype = "dashed", data = gr_poly) +
   geom_sf(aes(), fill = NA, colour = "white", linetype = "dashed", data = ws_poly) +
@@ -221,11 +218,12 @@ p4 <- ggplot() +
            expand = F) +
   scale_x_continuous(breaks = seq(from = -180, to = 180, by = 10)) +
   xlab(NULL) + ylab(NULL) +
-  ggtitle("a: ice retreat") +
+  ggtitle("ice retreat") +
   scale_fill_discrete_gradient(#name = expression("Change in Sea Ice retreat"~(d~y^{-1})),
                                name = expression("Mean Rate of Change"~(d~y^{-1})),
                                colours = pals::warmcool(20),
                                bins = 20,
+                               oob = scales::squish,
                                limits = c(-10, 10),
                                breaks = seq(-10, 10, 2),
                                na.value = "black",
@@ -254,7 +252,7 @@ p5 <- ggplot() +
   theme(panel.background = element_rect(fill = "black"),
         panel.grid.major = element_line(color = "black"),
         panel.grid.minor = element_line(color = "black")) +
-  geom_raster(aes(x = x, y = y, fill = layer), data = npp_df) + 
+  geom_raster(aes(x = x, y = y, fill = layer.1), data = npp_df) + 
   geom_sf(aes(), colour = "grey50", fill = "grey50", data = world_shp) +
   coord_sf(xlim = c(-4030000, 2500000),
            ylim = c(-4500000, 2500000),
@@ -262,7 +260,7 @@ p5 <- ggplot() +
            expand = F) +
   scale_x_continuous(breaks = seq(from = -180, to = 180, by = 10)) +
   xlab(NULL) + ylab(NULL) +
-  ggtitle("b: spring bloom") +
+  ggtitle("spring bloom") +
   scale_fill_discrete_gradient(#name = expression("Change in Spring Bloom"~(d~y^{-1}))
                               name = expression("Mean Rate of Change"~(d~y^{-1})),
                                colours = pals::warmcool(20),
@@ -290,25 +288,119 @@ p5 <- ggplot() +
         axis.text.x = element_blank(),
         axis.text.y = element_blank())
 
-trial_1 <- p4 / p5
-trial_2 <- p1 / p2
-(trial_1) | (trial_2)
 
-quartz(title = "Panel Plot", width = 7, height = 7)
-(trial_1) | (trial_2)
-quartz.save(file = "plots/example arctic change 2022-09-23.jpeg", type = "jpeg",
-            dev  = dev.cur(), dpi = 500)
-dev.off()
+# quartz(title = "Panel Plot", width = 7, height = 7)
+# (trial_1) | (trial_2)
+# quartz.save(file = "plots/example arctic change 2022-09-23.jpeg", type = "jpeg",
+#             dev  = dev.cur(), dpi = 500)
+# dev.off()
 
 quartz(title = "Panel Plot", width = 7, height = 6.5)
 (p4 + p5 + plot_layout(guides='collect')) /
   (p1 + p2 + plot_layout(guides='collect') & theme(legend.position='bottom')) +
   plot_layout(heights = c(2, 1), widths = c(1,1)) 
-quartz.save(file = "plots/example arctic change 2023-09-21.jpeg", type = "jpeg",
+quartz.save(file = "plots/example arctic change 2023-09-22.jpeg", type = "jpeg",
             dev  = dev.cur(), dpi = 500)
 dev.off()
 
+# standard deviation
 
+p6 <- ggplot() +
+  theme_minimal(base_size = 7, base_family = "Helvetica") +
+  theme(panel.background = element_rect(fill = "black"),
+        panel.grid.major = element_line(color = "black"),
+        panel.grid.minor = element_line(color = "black")) +
+  geom_raster(aes(x = x, y = y, fill = layer.2), data = ice_df) + 
+  geom_sf(aes(), fill = NA, colour = "white", linetype = "dashed", data = nw_poly) +
+  geom_sf(aes(), fill = NA, colour = "white", linetype = "dashed", data = gr_poly) +
+  geom_sf(aes(), fill = NA, colour = "white", linetype = "dashed", data = ws_poly) +
+  geom_sf(aes(), colour = "grey50", fill = "grey50", data = world_shp) +
+  geom_text(aes(x = -3000000, y = -2500000, label = "NA"), colour = "white") + 
+  geom_text(aes(x = -500000, y = -2000000, label = "WI"), colour = "white") + 
+  geom_text(aes(x = 1500000, y = -1700000, label = "WS"), colour = "white") + 
+  coord_sf(xlim = c(-4030000, 2500000),
+           ylim = c(-4500000, 2500000),
+           crs = "+proj=stere +lat_0=90 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs ",
+           expand = F) +
+  scale_x_continuous(breaks = seq(from = -180, to = 180, by = 10)) +
+  xlab(NULL) + ylab(NULL) +
+#  ggtitle("a: ice retreat") +
+  scale_fill_discrete_gradient(#name = expression("Change in Sea Ice retreat"~(d~y^{-1})),
+    name = expression("SD Rate of Change"~(d~y^{-1})),
+    colours = pals::coolwarm(20),
+    bins = 20,
+    oob = scales::squish,
+    limits = c(0, 100),
+    breaks = seq(0, 100, 25),
+    labels = c(0, 25, 50, 75, "100 +"),
+    na.value = "black",
+    guide = guide_colourbar(nbin = 500,
+                            raster = T,
+                            frame.colour = "black",
+                            ticks.colour = "black",
+                            frame.linewidth = .25,
+                            barwidth = .5,
+                            barheight = 15,
+                            direction = "vertical",
+                            title.position = "right", #or "right"
+                            title.theme = element_text(angle = 90,
+                                                       hjust = 0.5,
+                                                       size = 7))) +
+  theme(legend.position = "right",
+        legend.box = "vertical",
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()) +
+  add_phylopic(name = "harp seal", alpha = 1, x = -3000000, y = 2000000, ysize = 500000, color = "white")
+
+p7 <- ggplot() +
+  theme_minimal(base_size = 7, base_family = "Helvetica") +
+  theme(panel.background = element_rect(fill = "black"),
+        panel.grid.major = element_line(color = "black"),
+        panel.grid.minor = element_line(color = "black")) +
+  geom_raster(aes(x = x, y = y, fill = layer.2), data = npp_df) + 
+  geom_sf(aes(), colour = "grey50", fill = "grey50", data = world_shp) +
+  coord_sf(xlim = c(-4030000, 2500000),
+           ylim = c(-4500000, 2500000),
+           crs = "+proj=stere +lat_0=90 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs ",
+           expand = F) +
+  scale_x_continuous(breaks = seq(from = -180, to = 180, by = 10)) +
+  xlab(NULL) + ylab(NULL) +
+#  ggtitle("b: spring bloom") +
+  scale_fill_discrete_gradient(#name = expression("Change in Spring Bloom"~(d~y^{-1}))
+    name = expression("SD Rate of Change"~(d~y^{-1})),
+    colours = pals::coolwarm(20),
+    bins = 20,
+    oob = scales::squish,
+    limits = c(0, 100),
+    breaks = seq(0, 100, 25),
+    labels = c(0, 25, 50, 75, "100 +"),
+    na.value = "black",
+    guide = guide_colourbar(nbin = 500,
+                            raster = T,
+                            frame.colour = "black",
+                            ticks.colour = "black",
+                            frame.linewidth = .25,
+                            barwidth = .5,
+                            barheight = 15,
+                            direction = "vertical",
+                            title.position = "right", #or "right"
+                            title.theme = element_text(angle = 90,
+                                                       hjust = 0.5,
+                                                       size = 7))) +
+  theme(legend.position = "right",
+        legend.box = "vertical",
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank())
+
+quartz(title = "Panel Plot", width = 7, height = 6.5)
+(p4 + p5 + plot_layout(guides='collect')) / (p6 + p7 + plot_layout(guides='collect'))
+quartz.save(file = "plots/example arctic change supplement 2023-09-22.jpeg", type = "jpeg",
+            dev  = dev.cur(), dpi = 500)
+dev.off()
 
 
 

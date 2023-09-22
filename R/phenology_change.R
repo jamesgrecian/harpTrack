@@ -9,7 +9,7 @@ npp_phenology_change <- function(path){
   fn <- list.files(path, pattern = "5percent", full.names = T)
   fn <- fn %>% substr(1, nchar(fn)-4) %>% unique()
   npp_phenology_bloom <- stack(fn)
-  npp_phenology_bloom[is.na(npp_phenology_bloom)] <- 365
+  npp_phenology_bloom[is.na(npp_phenology_bloom)] <- 246
   
   # create land mask by summing across stack
   # then divide by number of layers
@@ -17,7 +17,7 @@ npp_phenology_change <- function(path){
   # this is either permanent ice or land
   land_mask <- calc(npp_phenology_bloom, fun = sum)
   land_mask <- land_mask/23
-  land_mask[land_mask == 365] <- NA
+  land_mask[land_mask == 246] <- NA
 
   change <- stack()
   for(i in 1:(nlayers(npp_phenology_bloom)-1)){
@@ -26,12 +26,12 @@ npp_phenology_change <- function(path){
     change <- stack(change, foo)
   }
   
-  meanChange_npp <- calc(change, mean)
+  meanChange_npp <-calc(change, mean, na.rm = T)
+  sdChange_npp <- calc(change, sd, na.rm = T)
   meanChange_npp[is.na(land_mask)] <- NA
-  return(meanChange_npp)
+  sdChange_npp[is.na(land_mask)] <- NA
+  return(stack(meanChange_npp, sdChange_npp))
 }
-
-meanChange_ice <- ice_phenology_change(path = "data/NSIDC")
 
 ice_phenology_change <- function(path){
   
@@ -40,11 +40,11 @@ ice_phenology_change <- function(path){
   fn <- fn[-28]
   fn <- fn[-27]
   ice <- raster::stack(fn, bands = 1)
-  ice[is.na(ice)] <- 365
+  ice[is.na(ice)] <- 275
   
   land_mask <- calc(ice, fun = sum)
   land_mask <- land_mask/26
-  land_mask[land_mask == 365] <- NA
+  land_mask[land_mask == 275] <- NA
   
   change <- stack()
   for(i in 1:(nlayers(ice)-1)){
@@ -53,10 +53,11 @@ ice_phenology_change <- function(path){
     change <- stack(change, foo)
   }
   
-  meanChange_ice <- calc(change, mean)
+  meanChange_ice <- calc(change, mean, na.rm = T)
+  sdChange_ice <- calc(change, sd, na.rm = T)
   meanChange_ice[is.na(land_mask)] <- NA
-  
-  return(meanChange_ice)
+  sdChange_ice[is.na(land_mask)] <- NA
+  return(stack(meanChange_ice, sdChange_ice))
 }
 
 # ends
