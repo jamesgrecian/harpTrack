@@ -121,12 +121,15 @@ future_npp <- function(path_to_present, path_to_future){
     layer2 <- future_npp[[i]]
     s <- stack(layer1, layer2)
     summed_layer <- calc(s, sum, na.rm = T)
-    summed_layer <- mask(summed_layer, layer1)
+    summed_layer <- mask(summed_layer, layer2) # mask by layer 2 not layer 1
     return(summed_layer)
   })
   
   # Create a new raster stack from the output layers
   output_stack <- stack(output_layers)
+  
+  # if adding the climate anomaly has made npp negative, shift to 0
+  output_stack[output_stack < 0] <- 0
   
   # trim NPP by user defined quantile
   # remove top 95% percentile of data - these are mainly inshore coastal sediment driven
