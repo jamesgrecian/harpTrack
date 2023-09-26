@@ -218,7 +218,7 @@ p4 <- ggplot() +
            expand = F) +
   scale_x_continuous(breaks = seq(from = -180, to = 180, by = 10)) +
   xlab(NULL) + ylab(NULL) +
-  ggtitle("ice retreat") +
+  ggtitle("a: ice retreat") +
   scale_fill_discrete_gradient(#name = expression("Change in Sea Ice retreat"~(d~y^{-1})),
                                name = expression("Mean Rate of Change"~(d~y^{-1})),
                                colours = pals::warmcool(20),
@@ -260,7 +260,7 @@ p5 <- ggplot() +
            expand = F) +
   scale_x_continuous(breaks = seq(from = -180, to = 180, by = 10)) +
   xlab(NULL) + ylab(NULL) +
-  ggtitle("spring bloom") +
+  ggtitle("b: spring bloom") +
   scale_fill_discrete_gradient(#name = expression("Change in Spring Bloom"~(d~y^{-1}))
                               name = expression("Mean Rate of Change"~(d~y^{-1})),
                                colours = pals::warmcool(20),

@@ -25,3 +25,5 @@ knitr::opts_chunk$set(
 5. Extract covariates to seal tracks
 6. Phenology bootstrap
 7. Spring bloom histograms
+8. Illustrating Arctic change
+9. Future bootstrapping
